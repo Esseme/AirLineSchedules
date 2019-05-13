@@ -1,4 +1,4 @@
-package com.airlineschedules;
+package com.airlineschedules.network;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
