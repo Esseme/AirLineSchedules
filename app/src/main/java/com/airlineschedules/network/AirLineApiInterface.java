@@ -10,6 +10,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 /**
  * Created by Ed Ssemuwemba on 5/11/19.
@@ -21,9 +22,9 @@ public interface AirLineApiInterface {
     Call<Token> getToken(@Header("client_id") String clientId, @Header("client_secret") String clientSecret, @Header("grant_type") String grantType);
 
     @GET("operations/schedules/{origin}/{destination}/{fromDateTime}[?directFlights=true]")
-    Call<List<Schedule>> getSchedules(@Header("access_token") String accessToken);
+    Call<List<Schedule>> getSchedules(@Header("Authorization") String accessToken, @Header("Accept") String accept, @Path("origin") String originAir, @Path("destination") String destAir, @Path("fromDateTime") String dateTime);
 
     @GET("/references/airports/{airportCode}[?lang={languageCode}]")
-    Call<Airport> getAirportCord(@Header("access_token") String accesToken);
+    Call<Airport> getAirportCord(@Header("Authorization") String accesToken, @Header("Accept") String accept, @Path("airportCode") String airCode, @Path("languageCode") String langCode);
 
 }

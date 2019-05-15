@@ -1,26 +1,21 @@
 package com.airlineschedules.activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.airlineschedules.R;
-import com.airlineschedules.model.Token;
-import com.airlineschedules.network.AirLineApiInterface;
-import com.airlineschedules.network.RetrofitInstance;
 
 import java.util.Locale;
 
 import androidx.appcompat.app.AppCompatActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by Ed Ssemuwemba on 11/05/19.
@@ -28,6 +23,7 @@ import retrofit2.Response;
  */
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
+    private Context context = MainActivity.this;
 
     @BindView(R.id.originEditText)
     AutoCompleteTextView originEdit;
@@ -35,19 +31,23 @@ public class MainActivity extends AppCompatActivity {
     AutoCompleteTextView destEdit;
     @BindView(R.id.submitButton)
     Button submit;
-    private String CLIENT_ID = "evea7xfzps8a9w8y9pnttmse";
-    private String CLIENT_SECRET = "mwMucZnCEZ";
-    private String GRANT_TYPE = "client_credentials";
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        preferences = context.getSharedPreferences("MyPreferences", 0);
+        editor = preferences.edit();
 
         ArrayAdapter<String> stringAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, COUNTRIES);
         originEdit.setAdapter(stringAdapter);
         destEdit.setAdapter(stringAdapter);
+        submitDetails();
     }
 
     /* For Submitting Details */
@@ -61,12 +61,15 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "Origin Country Code: " + getAirportCode(origin));
         Log.d(TAG, "Destination Country Code: " + getAirportCode(destination));
 
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        submit.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SchedulesActivity.class);
+            startActivity(intent);
+//            intent.putExtra("ORIGIN_AIR", origin);
+//            intent.putExtra("DEST_AIR", destination);
+            editor.putString("ORIGIN_AIR", origin);
+            editor.putString("DEST_AIR", destination);
+            editor.commit();
 
-
-            }
         });
 
 
@@ -90,29 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /* Obtaining Auth */
-    public void getAuth(){
-        AirLineApiInterface lineApiInterface = RetrofitInstance.getRetrofitInstance().create(AirLineApiInterface.class);
-        Call<Token> tokenCall = lineApiInterface.getToken(CLIENT_ID, CLIENT_SECRET, GRANT_TYPE);
-        tokenCall.enqueue(new Callback<Token>() {
-            @Override
-            public void onResponse(Call<Token> call, Response<Token> response) {
-                Token token = response.body();
-                if (response.isSuccessful() && token != null){
-                    Log.d(TAG, "The token is " + token.getAccesToken());
 
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<Token> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Error is " + t.getMessage(), Toast.LENGTH_LONG).show();
-
-            }
-        });
-
-    }
 
 
     private static final String[] COUNTRIES = new String[] {

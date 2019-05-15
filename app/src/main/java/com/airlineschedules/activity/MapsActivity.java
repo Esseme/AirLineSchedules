@@ -12,7 +12,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
 
 /**
  * Created by Ed Ssemuwemba on 5/13/19.
