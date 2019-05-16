@@ -36,6 +36,9 @@
         <activity
             android:name="com.airlineschedules.activity.MapsActivity"
             android:label="@string/app_name"/>
+        <activity
+            android:name=".activity.SchedulesActivity"
+            android:label="@string/app_name"/>
 
 
     </application>

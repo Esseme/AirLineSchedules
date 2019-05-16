@@ -5,10 +5,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.airlineschedules.R;
-import com.airlineschedules.adapter.ScheduleAdapter;
+import com.airlineschedules.adapter.SchedulesAdapter;
 import com.airlineschedules.model.Schedule;
 import com.airlineschedules.model.Token;
 import com.airlineschedules.network.AirLineApiInterface;
@@ -19,8 +20,6 @@ import java.util.Locale;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -34,12 +33,14 @@ import retrofit2.Response;
 public class SchedulesActivity extends AppCompatActivity {
 
     public static final String TAG = SchedulesActivity.class.getSimpleName();
-    private ScheduleAdapter adapter;
+//    private ScheduleAdapter adapter;
+    private SchedulesAdapter adapter;
     private Context context = SchedulesActivity.this;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
-    @BindView(R.id.recycler_view_schedule_list)
-    RecyclerView recyclerView;
+
+    @BindView(R.id.scheduleList)
+    ListView schedulesListView;
     private ProgressDialog progressDialog;
     private String CLIENT_ID = "evea7xfzps8a9w8y9pnttmse";
     private String CLIENT_SECRET = "mwMucZnCEZ";
@@ -50,19 +51,20 @@ public class SchedulesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_schedules);
+//        setContentView(R.layout.activity_schedules);
+        setContentView(R.layout.activity_schedules_list);
         ButterKnife.bind(this);
         preferences = context.getSharedPreferences("MyPreferences", 0);
         createProgressDialog();
         progressDialog.show();
         getAuth();
 
-
     }
 
 
     /* Obtaining Auth */
     public void getAuth(){
+
         AirLineApiInterface lineApiInterface = RetrofitInstance.getRetrofitInstance().create(AirLineApiInterface.class);
         Call<Token> tokenCall = lineApiInterface.getToken(CLIENT_ID, CLIENT_SECRET, GRANT_TYPE);
         tokenCall.enqueue(new Callback<Token>() {
@@ -70,8 +72,8 @@ public class SchedulesActivity extends AppCompatActivity {
             public void onResponse(Call<Token> call, Response<Token> response) {
                 Token token = response.body();
                 if (response.isSuccessful() && token != null){
-                    progressDialog.dismiss();
                     String accessToken = token.getAccesToken();
+                    Log.d(TAG, "Obtaining Token");
                     Log.d(TAG, "The token is " + accessToken);
 
                     AirLineApiInterface lineApiInterface = RetrofitInstance.getRetrofitInstance().create(AirLineApiInterface.class);
@@ -79,7 +81,9 @@ public class SchedulesActivity extends AppCompatActivity {
                     listCall.enqueue(new Callback<List<Schedule>>() {
                         @Override
                         public void onResponse(Call<List<Schedule>> call, Response<List<Schedule>> response) {
+                            progressDialog.dismiss();
                             List<Schedule> schedules = response.body();
+                            Log.d(TAG, "SchedulesList size is " + schedules.size());
                             if (schedules != null && !schedules.isEmpty()){
                                 generateScheduleList(schedules);
 
@@ -103,22 +107,22 @@ public class SchedulesActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Token> call, Throwable t) {
-                Toast.makeText(SchedulesActivity.this, "Error is " + t.getMessage(), Toast.LENGTH_LONG).show();
+                progressDialog.dismiss();
+                Log.d(TAG, "Error is " + t.getMessage());
+                Toast.makeText(SchedulesActivity.this, "Unable to connect", Toast.LENGTH_LONG).show();
 
             }
         });
+
 
     }
 
     /* Method to generate Schedule List */
     private void generateScheduleList(final List<Schedule> dataList){
-        adapter = new ScheduleAdapter(dataList, context);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
-//        recyclerView.addOnItemTouchListener(new RecyclerItemClicklistener(context, new RecyclerItemClickListener.OnItemClickListener() {
+        adapter = new SchedulesAdapter(dataList, context);
 //
-//        }));
+
+        schedulesListView.setAdapter(adapter);
     }
 
     private void createProgressDialog() {

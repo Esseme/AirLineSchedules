@@ -47,38 +47,39 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> stringAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, COUNTRIES);
         originEdit.setAdapter(stringAdapter);
         destEdit.setAdapter(stringAdapter);
-        submitDetails();
-    }
 
-    /* For Submitting Details */
-    private void submitDetails(){
-        String origin = originEdit.getText().toString().trim();
-        String destination = destEdit.getText().toString().trim();
-        boolean validOrigin = isOriginValid(origin);
-        boolean validDest = isDestValid(destination);
-        if (!validOrigin || !validDest) return;
 
-        Log.d(TAG, "Origin Country Code: " + getAirportCode(origin));
-        Log.d(TAG, "Destination Country Code: " + getAirportCode(destination));
+
 
         submit.setOnClickListener(v -> {
+
+            String origin = originEdit.getText().toString().trim();
+            String destination = destEdit.getText().toString().trim();
+            boolean validOrigin = isOriginValid(origin);
+            boolean validDest = isDestValid(destination);
+            if (!validOrigin || !validDest) return;
+
+            Log.d(TAG, "Origin Country Code: " + getAirportCode(origin));
+            Log.d(TAG, "Destination Country Code: " + getAirportCode(destination));
+
             Intent intent = new Intent(MainActivity.this, SchedulesActivity.class);
             startActivity(intent);
 //            intent.putExtra("ORIGIN_AIR", origin);
 //            intent.putExtra("DEST_AIR", destination);
             editor.putString("ORIGIN_AIR", origin);
             editor.putString("DEST_AIR", destination);
-            editor.commit();
+            editor.apply();
 
         });
 
-
     }
+
+
 
     /* Validations */
     private boolean isOriginValid(String origin){
         if (origin.equals("")){
-            originEdit.setError("Please Type An Origin");
+            originEdit.setError("Please Type A Country");
             return false;
         }
         return true;
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isDestValid(String dest){
         if (dest.equals("")){
-            destEdit.setError("Please Type A Destination");
+            destEdit.setError("Please Type A Country");
             return false;
         }
         return true;

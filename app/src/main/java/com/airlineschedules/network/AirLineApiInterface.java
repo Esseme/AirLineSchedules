@@ -24,7 +24,7 @@ public interface AirLineApiInterface {
     @GET("operations/schedules/{origin}/{destination}/{fromDateTime}[?directFlights=true]")
     Call<List<Schedule>> getSchedules(@Header("Authorization") String accessToken, @Header("Accept") String accept, @Path("origin") String originAir, @Path("destination") String destAir, @Path("fromDateTime") String dateTime);
 
-    @GET("/references/airports/{airportCode}[?lang={languageCode}]")
+    @GET("references/airports/{airportCode}[?lang={languageCode}]")
     Call<Airport> getAirportCord(@Header("Authorization") String accesToken, @Header("Accept") String accept, @Path("airportCode") String airCode, @Path("languageCode") String langCode);
 
 }
