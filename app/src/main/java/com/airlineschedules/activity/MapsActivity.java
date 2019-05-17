@@ -1,5 +1,7 @@
 package com.airlineschedules.activity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.airlineschedules.R;
@@ -18,12 +20,14 @@ import androidx.appcompat.app.AppCompatActivity;
  * esseme@gmail.com
  */
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+    SharedPreferences preferences;
+    private Context context = MapsActivity.this;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Get the SupportMapFragment and request notification
-        // when the map is ready to be used.
+        preferences = context.getSharedPreferences("MyPreferences", 0);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);

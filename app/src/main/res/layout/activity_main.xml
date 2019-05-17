@@ -47,7 +47,8 @@
         android:layout_marginBottom="24dp"
         android:padding="12dp"
         android:text="@string/submit"
-        android:textColor="#fff"/>
+        android:textColor="#fff"
+        style="@style/Widget.AppCompat.Button.Colored"/>
     </LinearLayout>
 
 
