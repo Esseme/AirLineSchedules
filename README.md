@@ -1,2 +1,2 @@
 # AirLineSchedules
-Android app written in Java utilising the https://developer.lufthansa.com
+Android app written in Java utilising the https://developer.lufthansa.com api
