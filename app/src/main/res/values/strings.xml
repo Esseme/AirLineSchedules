@@ -3,7 +3,7 @@
     <string name="submit">Submit</string>
     <string name="origin_port">Origin Country</string>
     <string name="destination_port">Destination Country</string>
-    <string name="google_maps_key">AIzaSyBIu5czTDQTP_QcTKCVKQEE0gMragIhN3I</string>
+    <string name="google_maps_key"> </string>
     <string name="air_port">EBB</string>
     <string name="terminal">One</string>
     <string name="schedule_date">14/05/2019</string>
